@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Tree.belongsToMany(models.Insect,
+        { through: models.InsectTree })
     }
   };
   Tree.init({
