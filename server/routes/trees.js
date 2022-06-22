@@ -13,6 +13,7 @@ const { Insect, Tree } = require("../db/models");
  *   Import Op to perform comparison operations in WHERE clauses
  **/
 // Your code here
+const { Op } = require("sequelize");
 
 /**
  * BASIC PHASE 1, Step B - List of all trees in the database
@@ -249,7 +250,18 @@ router.put("/:id", async (req, res, next) => {
  *   - Ordered by the heightFt from tallest to shortest
  */
 router.get("/search/:value", async (req, res, next) => {
-  let trees = [];
+  // let trees = [];
+  const searchValue = req.params.value;
+  const trees = await Tree.findAll({
+    where: {
+      [Op.or]: [
+        { tree: { [Op.like]: `%${searchValue}%` } },
+        // { location: { [Op.like]: `%${searchValue}%` } },
+        // { heightFt: { [Op.eq]: searchValue } },
+        // { groundCircumferenceFt: { [Op.eq]: searchValue } },
+      ]
+    }
+  })
 
   res.json(trees);
 });
