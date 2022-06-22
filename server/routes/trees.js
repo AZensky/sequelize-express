@@ -6,6 +6,7 @@ const router = express.Router();
  * BASIC PHASE 1, Step A - Import model
  */
 // Your code here
+const { Insect, Tree } = require('../db/models');
 
 /**
  * INTERMEDIATE BONUS PHASE 1 (OPTIONAL), Step A:
@@ -24,11 +25,16 @@ const router = express.Router();
  *   - Ordered by the heightFt from tallest to shortest
  */
 router.get('/', async (req, res, next) => {
-    let trees = [];
+    // let trees = [];
 
     // Your code here
+    const allTrees = await Tree.findAll({
+        attributes: ['heightFt', 'tree', 'id'],
+        order: [['heightFt', 'DESC']]
+    })
 
-    res.json(trees);
+    // trees.push(allTrees);
+    res.json(allTrees);
 });
 
 /**
@@ -42,9 +48,10 @@ router.get('/', async (req, res, next) => {
  */
 router.get('/:id', async (req, res, next) => {
     let tree;
-
+    let treeId = req.params.id;
     try {
         // Your code here
+        tree = await Tree.findOne({ where: { id: treeId } });
 
         if (tree) {
             res.json(tree);
@@ -55,7 +62,7 @@ router.get('/:id', async (req, res, next) => {
                 details: 'Tree not found'
             });
         }
-    } catch(err) {
+    } catch (err) {
         next({
             status: "error",
             message: `Could not find tree ${req.params.id}`,
@@ -86,7 +93,7 @@ router.post('/', async (req, res, next) => {
             status: "success",
             message: "Successfully created new tree",
         });
-    } catch(err) {
+    } catch (err) {
         next({
             status: "error",
             message: 'Could not create new tree',
@@ -121,7 +128,7 @@ router.delete('/:id', async (req, res, next) => {
             status: "success",
             message: `Successfully removed tree ${req.params.id}`,
         });
-    } catch(err) {
+    } catch (err) {
         next({
             status: "error",
             message: `Could not remove tree ${req.params.id}`,
@@ -167,7 +174,7 @@ router.delete('/:id', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
     try {
         // Your code here
-    } catch(err) {
+    } catch (err) {
         next({
             status: "error",
             message: 'Could not update new tree',
